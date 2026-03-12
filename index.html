@@ -1,22 +1,380 @@
 <!DOCTYPE html>
-<html>
+<html lang="en-GB">
 <head>
-  <title>Interactive Quiz</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <title>Advanced British English Phrasal Verbs & Idioms – Cloze Test</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.6;
+      margin: 0;
+      padding: 0;
+      background: #f5f5f5;
+      color: #222;
+    }
+    header, main {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 1.5rem;
+    }
+    header {
+      background: #1f2933;
+      color: #f9fafb;
+    }
+    h1, h2 {
+      margin-top: 0;
+    }
+    section {
+      background: #ffffff;
+      margin-top: 1.5rem;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    }
+    ol {
+      padding-left: 1.25rem;
+    }
+    li + li {
+      margin-top: 0.75rem;
+    }
+    .phrase {
+      font-weight: 600;
+    }
+    .label {
+      font-weight: 600;
+    }
+    .example {
+      margin-top: 0.25rem;
+    }
+    .quiz-item {
+      border-top: 1px solid #e5e7eb;
+      padding-top: 1rem;
+      margin-top: 1rem;
+    }
+    .quiz-item:first-of-type {
+      border-top: none;
+      padding-top: 0;
+      margin-top: 0;
+    }
+    .question-text {
+      margin-bottom: 0.5rem;
+    }
+    .options {
+      margin-bottom: 0.5rem;
+    }
+    .options label {
+      display: block;
+      margin-bottom: 0.25rem;
+      cursor: pointer;
+    }
+    button {
+      padding: 0.35rem 0.75rem;
+      border-radius: 4px;
+      border: 1px solid #1f2933;
+      background: #111827;
+      color: #f9fafb;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+    button:disabled {
+      opacity: 0.6;
+      cursor: default;
+    }
+    .feedback {
+      margin-top: 0.35rem;
+      font-weight: 600;
+    }
+    .correct {
+      color: #166534;
+    }
+    .incorrect {
+      color: #b91c1c;
+    }
+    .answer-key {
+      font-size: 0.9rem;
+      color: #4b5563;
+      margin-top: 0.25rem;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
 </head>
 <body>
-  <h1>HTML Basics Quiz</h1>
-  <form id="quiz-form">
-    <div>
-      <p>1. What does HTML stand for?</p>
-      <input type="radio" name="q1" value="a"> Home Tool Markup Language<br>
-      <input type="radio" name="q1" value="b"> HyperText Markup Language<br>
-      <input type="radio" name="q1" value="c"> Hyperlink Text Management Language<br>
-    </div>
-    <button type="button" onclick="submitQuiz()">Submit</button>
-  </form>
-  <div id="result"></div>
+  <header>
+    <h1>Advanced British English Phrasal Verbs & Idioms</h1>
+    <p>A reference list and interactive cloze test using advanced British English expressions.</p>
+  </header>
 
-  <script src="script.js"></script>
+  <main>
+    <section aria-labelledby="list-heading">
+      <h2 id="list-heading">List of expressions with meanings and examples</h2>
+      <ol id="expression-list">
+        <!-- Populated by JavaScript -->
+      </ol>
+    </section>
+
+    <section aria-labelledby="quiz-heading">
+      <h2 id="quiz-heading">Cloze test</h2>
+      <p>Choose the option that best completes each sentence. After you submit each answer, you will see whether it was correct or incorrect.</p>
+      <div id="quiz-container">
+        <!-- Populated by JavaScript -->
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Data: expressions, meanings, examples, and separate cloze sentences
+    const items = [
+      {
+        phrase: "faff about",
+        meaning: "to waste time on unimportant tasks instead of doing what really needs to be done",
+        example: "We spent half the morning faffing about with the printer instead of finishing the report.",
+        cloze: "If you keep ______ in the kitchen, we’ll never get out of the house on time."
+      },
+      {
+        phrase: "bodge up",
+        meaning: "to do a job badly or carelessly, often creating more problems",
+        example: "The contractor completely bodged up the wiring, so we had to call someone else in.",
+        cloze: "They tried to fix the leak themselves but only managed to ______ the whole thing."
+      },
+      {
+        phrase: "muck in",
+        meaning: "to help with a task, especially something practical or messy, usually as part of a group",
+        example: "Everyone mucked in to get the office ready before the clients arrived.",
+        cloze: "If we all ______ for an hour, we can clear this backlog before lunch."
+      },
+      {
+        phrase: "belt and braces",
+        meaning: "a very cautious approach that uses more safety measures than strictly necessary",
+        example: "He backed up the files to two different drives, just to be belt and braces about it.",
+        cloze: "The legal team took a ______ approach and added several extra clauses to the contract."
+      },
+      {
+        phrase: "throw a spanner in the works",
+        meaning: "to cause a plan or process to go wrong or be delayed",
+        example: "The sudden change in regulations threw a spanner in the works for the whole project.",
+        cloze: "The supplier going into administration really ______ for our launch schedule."
+      },
+      {
+        phrase: "get your act together",
+        meaning: "to become better organised and more effective, especially after a period of poor performance",
+        example: "If the department doesn’t get its act together, we’ll lose the client.",
+        cloze: "You’ll need to ______ before the new manager arrives, or you’ll be in trouble."
+      },
+      {
+        phrase: "be snowed under",
+        meaning: "to have far too much work to deal with",
+        example: "I’m completely snowed under this week, so I can’t take on anything else.",
+        cloze: "We were so ______ with emails that we had to switch on an automatic reply."
+      },
+      {
+        phrase: "take the mickey",
+        meaning: "to tease or mock someone, often in a friendly way",
+        example: "They were only taking the mickey; they didn’t mean to upset you.",
+        cloze: "He’s always ______ out of my accent in meetings, but I know he’s joking."
+      },
+      {
+        phrase: "go pear-shaped",
+        meaning: "to go badly wrong, especially after starting well",
+        example: "The negotiations started well but went pear-shaped when the budget was mentioned.",
+        cloze: "Our carefully planned schedule ______ as soon as the train was cancelled."
+      },
+      {
+        phrase: "be chock-a-block",
+        meaning: "to be extremely full or crowded",
+        example: "The car park was chock-a-block, so we had to park on the street.",
+        cloze: "The trains were ______ with commuters after the strike ended."
+      },
+      {
+        phrase: "get down to brass tacks",
+        meaning: "to start dealing with the most important or practical details of a situation",
+        example: "After some small talk, we got down to brass tacks and discussed the contract.",
+        cloze: "Once everyone’s here, we can ______ and talk about the budget figures."
+      },
+      {
+        phrase: "be skint",
+        meaning: "to have no money or very little money",
+        example: "I’d love to come out, but I’m absolutely skint until payday.",
+        cloze: "He was so ______ after the holiday that he brought packed lunches for a month."
+      },
+      {
+        phrase: "flog a dead horse",
+        meaning: "to waste time trying to do something that has no chance of succeeding",
+        example: "Trying to revive that old software is just flogging a dead horse.",
+        cloze: "You’re ______ if you think they’ll change the policy at this stage."
+      },
+      {
+        phrase: "be in a pickle",
+        meaning: "to be in a difficult or awkward situation",
+        example: "We were in a bit of a pickle when the keynote speaker cancelled.",
+        cloze: "I’m ______ now that I’ve double-booked myself for two meetings."
+      },
+      {
+        phrase: "keep schtum",
+        meaning: "to stay silent, especially about something secret or sensitive",
+        example: "We were told to keep schtum about the merger until it was officially announced.",
+        cloze: "If you ______ about the surprise audit, we can see how the team really works under pressure."
+      },
+      {
+        phrase: "nip something in the bud",
+        meaning: "to stop a problem at an early stage before it becomes serious",
+        example: "We need to nip this lateness in the bud before it spreads through the team.",
+        cloze: "The manager decided to ______ any rumours by sending a clear email to everyone."
+      },
+      {
+        phrase: "be on the blink",
+        meaning: "to be not working properly or about to stop working (often about machines or devices)",
+        example: "My laptop’s on the blink again; I’ll have to call IT.",
+        cloze: "The projector was clearly ______, so we had to move the meeting online."
+      },
+      {
+        phrase: "cobble together",
+        meaning: "to put something together quickly and roughly, using whatever is available",
+        example: "We cobbled together a presentation from last year’s slides.",
+        cloze: "They managed to ______ a temporary solution before the clients arrived."
+      },
+      {
+        phrase: "queue-jump",
+        meaning: "to unfairly move ahead of others who have been waiting longer",
+        example: "People get really annoyed if you queue-jump at the post office.",
+        cloze: "He tried to ______ at the canteen, but the others sent him to the back."
+      },
+      {
+        phrase: "be knackered",
+        meaning: "to be extremely tired",
+        example: "By the end of the conference, we were absolutely knackered.",
+        cloze: "I was so ______ after the night shift that I fell asleep on the train home."
+      }
+    ];
+
+    // Utility: shuffle an array (Fisher–Yates)
+    function shuffle(array) {
+      const arr = array.slice();
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    // Build the reference list
+    function renderList() {
+      const list = document.getElementById("expression-list");
+      items.forEach((item) => {
+        const li = document.createElement("li");
+
+        const phraseSpan = document.createElement("span");
+        phraseSpan.className = "phrase";
+        phraseSpan.textContent = item.phrase;
+
+        const meaningSpan = document.createElement("span");
+        meaningSpan.innerHTML = ` – <span class="label">Meaning:</span> ${item.meaning}`;
+
+        const exampleDiv = document.createElement("div");
+        exampleDiv.className = "example";
+        exampleDiv.innerHTML = `<span class="label">Example:</span> ${item.example}`;
+
+        li.appendChild(phraseSpan);
+        li.appendChild(meaningSpan);
+        li.appendChild(exampleDiv);
+        list.appendChild(li);
+      });
+    }
+
+    // Build the cloze test
+    function renderQuiz() {
+      const container = document.getElementById("quiz-container");
+
+      items.forEach((item, index) => {
+        const quizItem = document.createElement("div");
+        quizItem.className = "quiz-item";
+        quizItem.setAttribute("data-correct", item.phrase);
+
+        const qNumber = index + 1;
+
+        const question = document.createElement("p");
+        question.className = "question-text";
+        question.innerHTML = `<span class="label">Question ${qNumber}:</span> ${item.cloze.replace("______", "_____")}`;
+        quizItem.appendChild(question);
+
+        // Build options: correct + 3 random distractors
+        const distractorsPool = items.filter((i) => i.phrase !== item.phrase);
+        const shuffledPool = shuffle(distractorsPool).slice(0, 3);
+        const optionPhrases = shuffle([item.phrase, ...shuffledPool.map((d) => d.phrase)]);
+
+        const optionsDiv = document.createElement("div");
+        optionsDiv.className = "options";
+        optionPhrases.forEach((phrase, optIndex) => {
+          const id = `q${qNumber}_opt${optIndex}`;
+          const label = document.createElement("label");
+          const input = document.createElement("input");
+          input.type = "radio";
+          input.name = `q${qNumber}`;
+          input.value = phrase;
+          input.id = id;
+
+          label.setAttribute("for", id);
+          label.appendChild(input);
+          label.appendChild(document.createTextNode(" " + phrase));
+          optionsDiv.appendChild(label);
+        });
+        quizItem.appendChild(optionsDiv);
+
+        const button = document.createElement("button");
+        button.type = "button";
+        button.textContent = "Check answer";
+        quizItem.appendChild(button);
+
+        const feedback = document.createElement("div");
+        feedback.className = "feedback";
+        feedback.setAttribute("aria-live", "polite");
+        quizItem.appendChild(feedback);
+
+        const answerKey = document.createElement("div");
+        answerKey.className = "answer-key";
+        answerKey.textContent = "";
+        quizItem.appendChild(answerKey);
+
+        button.addEventListener("click", () => {
+          const selected = quizItem.querySelector("input[type=radio]:checked");
+          const correct = quizItem.getAttribute("data-correct");
+
+          if (!selected) {
+            feedback.textContent = "Please choose an option before checking.";
+            feedback.className = "feedback incorrect";
+            return;
+          }
+
+          if (selected.value === correct) {
+            feedback.textContent = "Correct.";
+            feedback.className = "feedback correct";
+          } else {
+            feedback.textContent = "Incorrect.";
+            feedback.className = "feedback incorrect";
+          }
+
+          answerKey.textContent = `Correct answer: "${correct}".`;
+          button.disabled = true;
+          const radios = quizItem.querySelectorAll("input[type=radio]");
+          radios.forEach(r => r.disabled = true);
+        });
+
+        container.appendChild(quizItem);
+      });
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      renderList();
+      renderQuiz();
+    });
+  </script>
 </body>
 </html>
+
